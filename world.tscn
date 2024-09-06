@@ -1,0 +1,206 @@
+[gd_scene load_steps=16 format=3 uid="uid://d4jffqcjneyuc"]
+
+[ext_resource type="Script" path="res://PlayerController.gd" id="1_kqd2k"]
+[ext_resource type="AudioStream" uid="uid://dg0f152nd8oe2" path="res://footsteps.mp3" id="2_ke2fc"]
+[ext_resource type="Material" uid="uid://d3xvdn82t3liy" path="res://bricks.tres" id="2_y4o5y"]
+[ext_resource type="AudioStream" uid="uid://c0fkuookyrkgk" path="res://jump1.mp3" id="3_mvgws"]
+[ext_resource type="AudioStream" uid="uid://bg3c0metthavg" path="res://jump2.mp3" id="4_3inr1"]
+[ext_resource type="AudioStream" uid="uid://cj1r8lx660nlo" path="res://jump3.mp3" id="5_8sk2c"]
+[ext_resource type="AudioStream" uid="uid://ciea8j5ahq5oj" path="res://slide.mp3" id="6_3tqds"]
+[ext_resource type="Material" uid="uid://dv4n1k1eoyvne" path="res://noisetexture.tres" id="7_5xsgv"]
+[ext_resource type="AudioStream" uid="uid://g1km6ggu2o8r" path="res://ledgegrab.mp3" id="7_lvfeq"]
+[ext_resource type="Material" uid="uid://csuqfn27qox1o" path="res://metallic.tres" id="8_kkxem"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_llnyj"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_pesm3"]
+sky_material = SubResource("ProceduralSkyMaterial_llnyj")
+
+[sub_resource type="Environment" id="Environment_ggrhq"]
+background_mode = 2
+sky = SubResource("Sky_pesm3")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_543tq"]
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_wopjg"]
+random_pitch = 1.2
+streams_count = 3
+stream_0/stream = ExtResource("3_mvgws")
+stream_0/weight = 1.0
+stream_1/stream = ExtResource("4_3inr1")
+stream_1/weight = 1.0
+stream_2/stream = ExtResource("5_8sk2c")
+stream_2/weight = 1.0
+
+[node name="World" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_ggrhq")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.913396, 0.351729, 0.204925, 0.115975, -0.707399, 0.697235, 0.390201, -0.613086, -0.686927, 97.1963, 195.332, -206.047)
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.244729, 16.0267, -4.10161)
+script = ExtResource("1_kqd2k")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
+shape = SubResource("CapsuleShape3D_543tq")
+
+[node name="Head" type="Node3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+
+[node name="Camera3D" type="Camera3D" parent="CharacterBody3D/Head"]
+
+[node name="CameraRay" type="RayCast3D" parent="CharacterBody3D/Head/Camera3D"]
+target_position = Vector3(0, 0, -1.5)
+
+[node name="FootstepsSFX" type="AudioStreamPlayer" parent="CharacterBody3D"]
+stream = ExtResource("2_ke2fc")
+autoplay = true
+
+[node name="JumpSFX" type="AudioStreamPlayer" parent="CharacterBody3D"]
+stream = SubResource("AudioStreamRandomizer_wopjg")
+
+[node name="SlideSFX" type="AudioStreamPlayer" parent="CharacterBody3D"]
+stream = ExtResource("6_3tqds")
+volume_db = -5.0
+autoplay = true
+
+[node name="LedgegrabSFX" type="AudioStreamPlayer" parent="CharacterBody3D"]
+stream = ExtResource("7_lvfeq")
+volume_db = -5.0
+
+[node name="UncrouchChecker" type="RayCast3D" parent="CharacterBody3D"]
+target_position = Vector3(0, 1.5, 0)
+
+[node name="LedgeChecker" type="RayCast3D" parent="CharacterBody3D"]
+target_position = Vector3(0, -0.75, 0)
+
+[node name="Level" type="Node3D" parent="."]
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00062871, 13.3875, -4.15013)
+use_collision = true
+size = Vector3(5.85333, 3, 4.47382)
+material = ExtResource("7_5xsgv")
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="Level"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -11.9658, 12.1572, -45.3442)
+material_override = ExtResource("2_y4o5y")
+use_collision = true
+size = Vector3(29.9576, 36.1221, 31.4709)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Level/CSGBox3D5"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6674, 9.11327, -13.8082)
+operation = 2
+size = Vector3(33.1111, 22.0909, 10.2733)
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="Level"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -11.9658, 12.1572, -17.7384)
+material_override = ExtResource("2_y4o5y")
+use_collision = true
+size = Vector3(19.438, 36.1221, 31.4709)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Level/CSGBox3D6"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.344147, 9.11327, -13.8082)
+operation = 2
+size = Vector3(51.1205, 22.0909, 10.2733)
+
+[node name="Bracket" type="CSGBox3D" parent="Level"]
+transform = Transform3D(-4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 1.26293, 8.80105, -40.8067)
+material_override = ExtResource("8_kkxem")
+use_collision = true
+size = Vector3(1.02737, 9.20294, 9.8531)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Level/Bracket"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.253906, -0.0317688, 1.09979)
+operation = 2
+size = Vector3(2.10156, 6.06763, 9.32271)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.656, 11.7964, -70.2914)
+material_override = ExtResource("2_y4o5y")
+use_collision = true
+size = Vector3(23.2876, 36.171, 18.2012)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Level/CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.78593, 0, -20.7348)
+size = Vector3(42.2652, 36.171, 22.7529)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.2917, 10.1801, -76.3971)
+material_override = ExtResource("8_kkxem")
+use_collision = true
+size = Vector3(30.1645, 1, 7.5741)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Level/CSGBox3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.431376, 5.0137, -0.172539)
+size = Vector3(5.06836, 1, 7.50543)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="Level/CSGBox3D2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5851, 9.80982, -0.172539)
+size = Vector3(5.06836, 1, 7.50543)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Level/CSGBox3D2"]
+transform = Transform3D(0.831179, 0.556005, 0, -0.556005, 0.831179, 0, 0, 0, 1, 6.46062, 2.58505, -1.51414)
+size = Vector3(9.1467, 1, 3.5276)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Level/CSGBox3D2"]
+transform = Transform3D(0.830984, -0.556296, 0, 0.556296, 0.830984, 0, 0, 0, 1, 6.51989, 7.36562, 1.81937)
+size = Vector3(9.23508, 1, 3.5276)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="Level"]
+transform = Transform3D(0.99617, 0, -0.0874339, 0, 1, 0, 0.0874339, 0, 0.99617, -2.58835, 13.7175, -66.8393)
+material_override = ExtResource("7_5xsgv")
+use_collision = true
+size = Vector3(0.811035, 6.13574, 9.28579)
+
+[node name="CSGBox3D7" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41.2543, 6.75006, -61.8187)
+material_override = ExtResource("2_y4o5y")
+use_collision = true
+size = Vector3(26.3915, 27.371, 44.2117)
+
+[node name="CSGBox3D11" type="CSGBox3D" parent="Level"]
+transform = Transform3D(0.668534, 0, -0.743682, 0, 1, 0, 0.743682, 0, 0.668534, 78.0682, -0.481245, -13.0656)
+material_override = ExtResource("2_y4o5y")
+use_collision = true
+size = Vector3(26.3915, 20.781, 25.3786)
+
+[node name="CSGBox3D8" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41.2853, 22.7064, -62.7504)
+material_override = ExtResource("7_5xsgv")
+use_collision = true
+size = Vector3(26.2957, 8.03084, 0.355835)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Level/CSGBox3D8"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.77565, 3.07376, 0)
+operation = 2
+size = Vector3(10.0465, 2.922, 1)
+
+[node name="CSGBox3D9" type="CSGBox3D" parent="Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47.2996, 22.5255, -75.0063)
+material_override = ExtResource("7_5xsgv")
+use_collision = true
+size = Vector3(5.6759, 4.74194, 10.0054)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Level/CSGBox3D9"]
+transform = Transform3D(0.845234, -0.534397, 0, 0.534397, 0.845234, 0, 0, 0, 1, -5.34368, -1.50974, -2.784)
+size = Vector3(8.50185, 3.90802, 4.39441)
+
+[node name="CSGBox3D10" type="CSGBox3D" parent="Level"]
+transform = Transform3D(0.740512, -0.103532, 0.664021, -1.55079e-08, 0.988062, 0.154055, -0.672044, -0.11408, 0.731671, 54.2924, 20.3826, -39.4554)
+material_override = ExtResource("7_5xsgv")
+use_collision = true
+size = Vector3(4.88823, 1, 6.82712)
+
+[node name="CSGBox3D12" type="CSGBox3D" parent="Level"]
+transform = Transform3D(0.739408, 0, 0.673258, 0, 1, 0, -0.673258, 0, 0.739408, 69.5759, 9.8712, -22.5397)
+material_override = ExtResource("7_5xsgv")
+use_collision = true
+size = Vector3(9.81326, 1, 5.75585)

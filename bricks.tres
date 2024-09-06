@@ -1,0 +1,10 @@
+[gd_resource type="StandardMaterial3D" load_steps=2 format=3 uid="uid://d3xvdn82t3liy"]
+
+[ext_resource type="Texture2D" uid="uid://diddnle6gd2wu" path="res://Wall_bricks_old_64.png" id="1_tl8nk"]
+
+[resource]
+albedo_color = Color(0.66, 0.53295, 0.429, 1)
+albedo_texture = ExtResource("1_tl8nk")
+roughness = 0.81
+uv1_scale = Vector3(3, 3, 3)
+point_size = 0.1
